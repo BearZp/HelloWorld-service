@@ -1,0 +1,104 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+      - '../src/ServiceKernel.php'
+      - '../src/Tests/'
+
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  App\controller\:
+    resource: '../src/controller/'
+    tags: ['controller.service_arguments']
+    arguments:
+      - '@service_container'
+    calls:
+      - setLogger: ['@logger']
+
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
+
+
+
+
+
+#  http_kernel:
+#    class: App\services\HttpKernel
+#    public: 'true'
+#    tags: [ 'container.hot_path' ]
+#    arguments:
+#      - '@event_dispatcher'
+#      - '@controller_resolver'
+#      - '@?request_stack'
+#      - '@?argument_resolver'
+
+#  controller_resolver:
+#    class: App\services\ControllerResolver
+#    public: 'false'
+#    tags:
+#      - { name: 'monolog.logger', channel: 'request' }
+#    arguments:
+#      - '@service_container'
+#      - '@logger'
+
+#    defaultController:
+#        class: App\controller\DefaultController
+#        arguments:
+#            - '@logger'
+#        public: true
+
+  logger:
+    class: App\lib\logger\FileLogger
+    arguments:
+      - '%logger.filePath%'
+      - '%logger.levelLimit%'
+    public: true
+
+#
+#  router_listener:
+#    class: App\services\RouterListener
+#    public: false
+#    tags:
+#      - { name: 'kernel.event_subscriber' }
+#      - { name: 'monolog.logger', channel: 'request' }
+#      - { name: 'container.hot_path' }
+#    arguments:
+#      - '@router.default'
+#      - '@request_stack'
+#      - '@router.request_context'
+#      - '@logger'
+#      - '%kernel.project_dir%'
+#      - true
+#
+#  router.default:
+#    class: App\services\Router
+#    tags:
+#      - { name: 'monolog.logger', channel: 'router' }
+#      - { name: 'container.service_subscriber', id: 'routing.loader'}
+#    arguments:
+#      - '@service_container'
+#      - '%router.resource%'
+#      - { cache_dir: '%kernel.cache_dir%', debug: '%kernel.debug%', generator_class: Symfony\Component\Routing\Generator\CompiledUrlGenerator, generator_dumper_class: Symfony\Component\Routing\Generator\Dumper\CompiledUrlGeneratorDumper, matcher_class: Symfony\Bundle\FrameworkBundle\Routing\RedirectableCompiledUrlMatcher, matcher_dumper_class: Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper }
+#      - '@?router.request_context'
+#      - '@?parameter_bag'
+#      - '@?logger'
+#      - '%kernel.default_locale%'
+#    calls:
+#      - setConfigCacheFactory: [ '@config_cache_factory' ]
