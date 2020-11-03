@@ -1,4 +1,7 @@
 {
+    "helloworld/lib": {
+        "version": "0.0.1"
+    },
     "php": {
         "version": "7.2"
     },

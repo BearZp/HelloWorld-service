@@ -2,7 +2,7 @@
 
 namespace App\controller;
 
-use App\lib\logger\LogReferenceTrait;
+use Lib\logger\LogReferenceTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

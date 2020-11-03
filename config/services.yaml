@@ -65,7 +65,7 @@ services:
 #        public: true
 
   logger:
-    class: App\lib\logger\FileLogger
+    class: Lib\logger\FileLogger
     arguments:
       - '%logger.filePath%'
       - '%logger.levelLimit%'

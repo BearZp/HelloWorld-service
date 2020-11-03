@@ -78,8 +78,8 @@ try {
 
 /* Init Swoole server */
 $server = new \Swoole\HTTP\Server($host, $port);
-$server->on("start", function (\Swoole\Http\Server $server) use ($port) {
-    echo "Swoole http server is started at http://127.0.0.1:$port\n";
+$server->on("start", function (\Swoole\Http\Server $server) use ($host, $port) {
+    echo "Swoole http server is started at http://$host:$port\n";
 });
 /* ----------- */
 
@@ -103,20 +103,4 @@ $server->on("request", function (\Swoole\Http\Request $request, \Swoole\Http\Res
     $kernel->terminate($sfRequest, $sfResponse);
 });
 
-$count = 0;
-
-$server->on('timer', function() use ($count) {
-    try {
-        $count++;
-        if( $count % 10 == 0) {
-            var_dump("TICK");
-        }
-    } catch(Exception $e) {
-        //exception code
-    }
-}
-);
-
 $server->start();
-
-var_dump('do something else');
