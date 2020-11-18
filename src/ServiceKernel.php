@@ -8,8 +8,11 @@
 
 namespace App;
 
+use Lib\protocol\ProtocolPacket;
+use Lib\protocol\ProtocolPacketInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Swoole\Http\Request as SwooleRequest;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ServiceKernel extends Kernel
 {
@@ -34,6 +37,13 @@ class ServiceKernel extends Kernel
                 $post = json_decode($request->getContent());
             }
         }
+        if ($request->getContent()) {
+            /** @var ProtocolPacketInterface $packet */
+            $packet = unserialize(gzuncompress(base64_decode($request->getContent())));
+            $content = $packet;
+        } else {
+            $content = '';
+        }
 
         $sfRequest = new Request(
             $request->get ?? [],
@@ -42,7 +52,7 @@ class ServiceKernel extends Kernel
             $request->cookie ?? [],
             $request->files ?? [],
             $request->server,
-            $request->getContent()
+            $content
         );
 
         $sfRequest->setMethod($method);
@@ -54,5 +64,27 @@ class ServiceKernel extends Kernel
         }
 
         return $sfRequest;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Request $request, int $type = HttpKernelInterface::MASTER_REQUEST, bool $catch = true)
+    {
+        $sendResponce = false;
+        if ($request->getContent()) {
+            /** @var ProtocolPacketInterface $packet */
+            $packet = unserialize(gzuncompress(base64_decode($request->getContent())));
+            $request->getContent()
+            if($packet->getResponseChanel()) {
+
+            }
+        }
+
+
+
+        $response = parent::handle($request, $type, $catch);
+
+        return $response;
     }
 }

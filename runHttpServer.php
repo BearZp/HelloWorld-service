@@ -6,21 +6,18 @@
  * Time: 15:50
  */
 
+declare(strict_types=1);
 
 use App\ServiceKernel;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputArgument;
 
 require dirname(__FILE__).'/vendor/autoload.php';
 
 /* collect env variables */
 (new Dotenv())->bootEnv(dirname(__FILE__).'/.env');
 /* ----------- */
-
 
 /* Enable debug mod */
 if ($_SERVER['APP_DEBUG']) {
@@ -37,25 +34,6 @@ if ($trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? false) {
 if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
     Request::setTrustedHosts([$trustedHosts]);
 }
-/* ----------- */
-
-/* check console arguments */
-$inArg = new ArgvInput($_SERVER['argv']);
-if ( $inArg->getFirstArgument() === null ) {
-    $green = "\033[0;32m";
-    $lgreen = "\033[0;92m";
-    $noColor = "\033[0;21m";
-    echo PHP_EOL . 'This is the run script for demonized service v' . $_SERVER['APP_VERSION'] . PHP_EOL . PHP_EOL;
-    echo $lgreen . 'Usage:' . $noColor. PHP_EOL;
-    echo '  run.php 127.0.0.1 8080' . PHP_EOL . PHP_EOL;
-    exit (1);
-}
-$inArg->bind(new InputDefinition([
-    new InputArgument('host', InputArgument::REQUIRED),
-    new InputArgument('port', InputArgument::REQUIRED),
-]));
-$host = $inArg->getArgument('host');
-$port = (int) $inArg->getArgument('port');
 /* ----------- */
 
 /* init symfony kernel */
@@ -77,9 +55,9 @@ try {
 /* ----------- */
 
 /* Init Swoole server */
-$server = new \Swoole\HTTP\Server($host, $port);
-$server->on("start", function (\Swoole\Http\Server $server) use ($host, $port) {
-    echo "Swoole http server is started at http://$host:$port\n";
+$server = new \Swoole\HTTP\Server($_ENV['WORKER_HOST'], (int) $_ENV['WORKER_PORT']);
+$server->on("start", function (\Swoole\Http\Server $server) {
+    echo "Swoole http server is started at http://" . $_ENV['WORKER_HOST'] . ":" . $_ENV['WORKER_PORT'] . "\n";
 });
 /* ----------- */
 
@@ -98,7 +76,11 @@ $server->on("request", function (\Swoole\Http\Request $request, \Swoole\Http\Res
         $response->header($key, current($header));
     }
 
-    $response->end($sfResponse->getContent());
+    if ($sfResponse->headers->get('Connection') === 'close') {
+        $response->end();
+    } else {
+        $response->end($sfResponse->getContent());
+    }
 
     $kernel->terminate($sfRequest, $sfResponse);
 });

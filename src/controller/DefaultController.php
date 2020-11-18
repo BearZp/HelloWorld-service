@@ -3,6 +3,8 @@
 namespace App\controller;
 
 use Lib\logger\LogReferenceTrait;
+use Lib\protocol\ProtocolPacket;
+use Lib\protocol\ProtocolPacketInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,8 +37,22 @@ class DefaultController
      */
     public function index(Request $request)
     {
-        $response = New Response('Hello World !!! @');
 
-        return $response;
+        $packet = new ProtocolPacket(
+            'aaaa',
+            [
+                'asdfasdf' => "asdssdf",
+
+            ],
+            [
+                'scope' => 'scope'
+            ]
+        );
+        if ($request->getContent()) {
+            $packet = unserialize(gzuncompress(base64_decode($request->getContent())));
+        }
+
+        return  (new Response())->setContent(base64_encode(gzcompress(serialize($packet))));
+
     }
 }
