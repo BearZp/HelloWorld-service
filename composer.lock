@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc9aff71146859aaab7cd1f11a7a2bf6",
+    "content-hash": "67744aa822bbd1adfb739810a5374ef5",
     "packages": [
         {
             "name": "helloworld/lib",
@@ -2824,16 +2824,16 @@
     "packages-dev": [
         {
             "name": "swoole/ide-helper",
-            "version": "4.5.7",
+            "version": "4.5.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swoole/ide-helper.git",
-                "reference": "1b7daf1785ff22bfbf0d1d9a19e08deaacda929e"
+                "reference": "0ac993cd2b52bae2bd5d42198be9b62085378ac5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/1b7daf1785ff22bfbf0d1d9a19e08deaacda929e",
-                "reference": "1b7daf1785ff22bfbf0d1d9a19e08deaacda929e",
+                "url": "https://api.github.com/repos/swoole/ide-helper/zipball/0ac993cd2b52bae2bd5d42198be9b62085378ac5",
+                "reference": "0ac993cd2b52bae2bd5d42198be9b62085378ac5",
                 "shasum": ""
             },
             "require-dev": {
@@ -2856,9 +2856,9 @@
             "description": "IDE help files for Swoole.",
             "support": {
                 "issues": "https://github.com/swoole/ide-helper/issues",
-                "source": "https://github.com/swoole/ide-helper/tree/4.5.7"
+                "source": "https://github.com/swoole/ide-helper/tree/4.5.8"
             },
-            "time": "2020-11-12T17:09:30+00:00"
+            "time": "2020-11-20T18:59:51+00:00"
         }
     ],
     "aliases": [],
@@ -2870,7 +2870,8 @@
         "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-zlib": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
