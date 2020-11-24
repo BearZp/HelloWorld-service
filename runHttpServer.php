@@ -42,12 +42,6 @@ try {
     $kernel->boot();
     $logger = $kernel->getContainer()->get('logger');
 } catch (\Throwable $e) {
-    $logger->error($e->getMessage(), [
-        'exception' => $e,
-        'serviceName' => $_SERVER['APP_SERVICE_NAME'],
-        'actionName' => 'Run'
-    ]);
-
     var_dump($e->getMessage());
     var_dump($e->getTraceAsString());
     exit;

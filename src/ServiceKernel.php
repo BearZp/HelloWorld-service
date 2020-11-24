@@ -8,6 +8,7 @@
 
 namespace App;
 
+use Client\amqp\AmqpProtocol;
 use Lib\protocol\ProtocolPacket;
 use Lib\protocol\ProtocolPacketInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ServiceKernel extends Kernel
 {
+    /** @var string */
+    private $responseAmqpChanel;
+
+    /** @var string */
+    private $correlationId;
+
     /**
      * @param SwooleRequest $request
      * @return Request
@@ -39,10 +46,28 @@ class ServiceKernel extends Kernel
         }
         if ($request->getContent()) {
             /** @var ProtocolPacketInterface $packet */
-            $packet = unserialize(gzuncompress(base64_decode($request->getContent())));
-            $content = $packet;
+            parse_str($request->getContent(), $packet);
+            if (isset($packet['props'])) {
+                $this->correlationId = $packet['props']['correlation_id'];
+                $this->responseAmqpChanel = $packet['props']['reply_to'];
+            }
+
+            $paket  = json_decode(gzuncompress($packet['packet']), true);
+            if ($paket === null && json_last_error() !== JSON_ERROR_NONE) {
+                $message = 'JSON decode error: ' . json_last_error();
+                if (\function_exists('json_last_error_msg')) {
+                    $message .= ' ' . json_last_error_msg();
+                }
+                throw new \Exception($message);
+            }
+            $packet = new ProtocolPacket(
+                $packet['action'],
+                $packet['data'],
+                $packet['scope'],
+                $packet['requestId']
+            );
         } else {
-            $content = '';
+            $packet = '';
         }
 
         $sfRequest = new Request(
@@ -52,7 +77,7 @@ class ServiceKernel extends Kernel
             $request->cookie ?? [],
             $request->files ?? [],
             $request->server,
-            $content
+            $packet
         );
 
         $sfRequest->setMethod($method);
@@ -71,17 +96,10 @@ class ServiceKernel extends Kernel
      */
     public function handle(Request $request, int $type = HttpKernelInterface::MASTER_REQUEST, bool $catch = true)
     {
-        $sendResponce = false;
+        $sendResponse = false;
         if ($request->getContent()) {
-            /** @var ProtocolPacketInterface $packet */
-            $packet = unserialize(gzuncompress(base64_decode($request->getContent())));
-            $request->getContent()
-            if($packet->getResponseChanel()) {
-
-            }
+            var_dump($request->getContent());
         }
-
-
 
         $response = parent::handle($request, $type, $catch);
 

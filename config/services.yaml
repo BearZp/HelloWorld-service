@@ -35,35 +35,6 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-
-
-
-
-#  http_kernel:
-#    class: App\services\HttpKernel
-#    public: 'true'
-#    tags: [ 'container.hot_path' ]
-#    arguments:
-#      - '@event_dispatcher'
-#      - '@controller_resolver'
-#      - '@?request_stack'
-#      - '@?argument_resolver'
-
-#  controller_resolver:
-#    class: App\services\ControllerResolver
-#    public: 'false'
-#    tags:
-#      - { name: 'monolog.logger', channel: 'request' }
-#    arguments:
-#      - '@service_container'
-#      - '@logger'
-
-#    defaultController:
-#        class: App\controller\DefaultController
-#        arguments:
-#            - '@logger'
-#        public: true
-
   logger:
     class: Lib\logger\FileLogger
     arguments:
@@ -71,34 +42,18 @@ services:
       - '%logger.levelLimit%'
     public: true
 
-#
-#  router_listener:
-#    class: App\services\RouterListener
-#    public: false
-#    tags:
-#      - { name: 'kernel.event_subscriber' }
-#      - { name: 'monolog.logger', channel: 'request' }
-#      - { name: 'container.hot_path' }
-#    arguments:
-#      - '@router.default'
-#      - '@request_stack'
-#      - '@router.request_context'
-#      - '@logger'
-#      - '%kernel.project_dir%'
-#      - true
-#
-#  router.default:
-#    class: App\services\Router
-#    tags:
-#      - { name: 'monolog.logger', channel: 'router' }
-#      - { name: 'container.service_subscriber', id: 'routing.loader'}
-#    arguments:
-#      - '@service_container'
-#      - '%router.resource%'
-#      - { cache_dir: '%kernel.cache_dir%', debug: '%kernel.debug%', generator_class: Symfony\Component\Routing\Generator\CompiledUrlGenerator, generator_dumper_class: Symfony\Component\Routing\Generator\Dumper\CompiledUrlGeneratorDumper, matcher_class: Symfony\Bundle\FrameworkBundle\Routing\RedirectableCompiledUrlMatcher, matcher_dumper_class: Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper }
-#      - '@?router.request_context'
-#      - '@?parameter_bag'
-#      - '@?logger'
-#      - '%kernel.default_locale%'
-#    calls:
-#      - setConfigCacheFactory: [ '@config_cache_factory' ]
+  amqpProtocol:
+    class: Lib\protocol\AmqpProtocol
+    arguments:
+      - '@lazyAmqpConnection'
+      - '%env(resolve:RABBITMQ_QUEUE)%'
+      - '%clientConnectionTimeout%'
+
+  lazyAmqpConnection:
+    class: Lib\queues\rabbitMq\LazyRabbitMqConnectionProvider
+    arguments:
+      - '%env(resolve:RABBITMQ_HOST)%'
+      - '%env(resolve:RABBITMQ_PORT)%'
+      - '%env(resolve:RABBITMQ_USER)%'
+      - '%env(resolve:RABBITMQ_PASS)%'
+      - '%env(resolve:RABBITMQ_VHOST)%'

@@ -30,8 +30,21 @@ $channel->queue_declare($_ENV['RABBITMQ_QUEUE'], false, false, false, false);
 echo " [*] Waiting for messages. To exit press CTRL+C\n";
 
 $callback = function ($msg) {
+    /** @var \PhpAmqpLib\Message\AMQPMessage $msg */
     try {
-        $postString = urlencode($msg->body);
+
+        $props = $msg->get_properties();
+        if (!$props) {
+            $props = 'false';
+        }
+
+        $postString =  http_build_query([
+            'props' => $props,
+            'packet'=> $msg->body
+        ]);
+
+        var_dump($postString);
+
         $headers = [];
         $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         $headers['Content-Length'] = strlen($postString);
