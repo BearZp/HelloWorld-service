@@ -63,6 +63,7 @@ class ServiceKernel extends Kernel
             $this->activeProtocol = new AmqpProtocol(
                 $this->getContainer()->get('lazyAmqpConnection'),
                 $this->responseAmqpChanel,
+                false,
                 $this->getContainer()->getParameter('clientConnectionTimeout')
             );
             $this->incomePaket = $this->activeProtocol->catchPacket($post['packet']);
