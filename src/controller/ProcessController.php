@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Date: 17.09.20
  * Time: 17:39
  */
-class DefaultController
+class ProcessController
 {
     use LogReferenceTrait;
 
@@ -37,6 +37,6 @@ class DefaultController
      */
     public function index(Request $request)
     {
-        return new Response(json_encode(['aaa' => 'Hello world!']));
+        return new Response(json_encode(['controller' => 'ProcessController']));
     }
 }

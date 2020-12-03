@@ -8,11 +8,15 @@
 
 namespace App;
 
-use Client\amqp\AmqpProtocol;
+
+use Lib\protocol\AmqpProtocol;
+use Lib\protocol\ProtocolInterface;
 use Lib\protocol\ProtocolPacket;
 use Lib\protocol\ProtocolPacketInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Swoole\Http\Request as SwooleRequest;
+use Swoole\Http\Response as SwooleResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ServiceKernel extends Kernel
@@ -23,6 +27,12 @@ class ServiceKernel extends Kernel
     /** @var string */
     private $correlationId;
 
+    /** @var ProtocolInterface */
+    private $activeProtocol;
+
+    /** @var ProtocolPacketInterface */
+    private $incomePaket;
+
     /**
      * @param SwooleRequest $request
      * @return Request
@@ -30,6 +40,7 @@ class ServiceKernel extends Kernel
     public function transformRequest(SwooleRequest $request): Request {
         $method  = $request->server['request_method'];
 
+        // base decode post data
         $post = $request->post ?? [];
         if (in_array(strtoupper($method), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
             if (isset($request->header['Content-Type'])
@@ -44,45 +55,41 @@ class ServiceKernel extends Kernel
                 $post = json_decode($request->getContent());
             }
         }
-        if ($request->getContent()) {
-            /** @var ProtocolPacketInterface $packet */
-            parse_str($request->getContent(), $packet);
-            if (isset($packet['props'])) {
-                $this->correlationId = $packet['props']['correlation_id'];
-                $this->responseAmqpChanel = $packet['props']['reply_to'];
-            }
 
-            $paket  = json_decode(gzuncompress($packet['packet']), true);
-            if ($paket === null && json_last_error() !== JSON_ERROR_NONE) {
-                $message = 'JSON decode error: ' . json_last_error();
-                if (\function_exists('json_last_error_msg')) {
-                    $message .= ' ' . json_last_error_msg();
-                }
-                throw new \Exception($message);
-            }
-            $packet = new ProtocolPacket(
-                $packet['action'],
-                $packet['data'],
-                $packet['scope'],
-                $packet['requestId']
+        //detect protocol
+        if (isset($post['props']) && $post['props'] !== 'false') {
+            $this->correlationId =      $post['props']['correlation_id'];
+            $this->responseAmqpChanel = $post['props']['reply_to'];
+            $this->activeProtocol = new AmqpProtocol(
+                $this->getContainer()->get('lazyAmqpConnection'),
+                $this->responseAmqpChanel,
+                $this->getContainer()->getParameter('clientConnectionTimeout')
             );
+            $this->incomePaket = $this->activeProtocol->catchPacket($post['packet']);
+
         } else {
-            $packet = '';
+            $this->incomePaket = new ProtocolPacket(
+                $request->server['request_uri'],
+                $post,
+                [],
+                ''
+            );
         }
 
+        /// create Symfony request
         $sfRequest = new Request(
             $request->get ?? [],
-            $post,
+            $this->incomePaket->getData(),
             [],
             $request->cookie ?? [],
             $request->files ?? [],
             $request->server,
-            $packet
+            $post
         );
 
         $sfRequest->setMethod($method);
         $sfRequest->headers->replace($request->header);
-        $sfRequest->server->set('REQUEST_URI', $request->server['request_uri']);
+        $sfRequest->server->set('REQUEST_URI', $this->incomePaket->getAction());
 
         if (isset($request->header['host'])) {
             $sfRequest->server->set('SERVER_NAME', $request->header['host']);
@@ -92,17 +99,22 @@ class ServiceKernel extends Kernel
     }
 
     /**
-     * {@inheritdoc}
+     * @param Response $sfResponse
+     * @param SwooleResponse $response
+     * @throws \Exception
      */
-    public function handle(Request $request, int $type = HttpKernelInterface::MASTER_REQUEST, bool $catch = true)
+    public function transformResponse(Response $sfResponse, SwooleResponse $response)
     {
-        $sendResponse = false;
-        if ($request->getContent()) {
-            var_dump($request->getContent());
+        if ($this->activeProtocol instanceof AmqpProtocol) {
+            $paket = new ProtocolPacket(
+                'Answer',
+                json_decode($sfResponse->getContent(), true),
+                $this->incomePaket->getScope(),
+                $this->incomePaket->getRequestId()
+            );
+            $this->activeProtocol->pushPacket($paket, $this->correlationId);
+        } else {
+            $response->write($sfResponse->getContent());
         }
-
-        $response = parent::handle($request, $type, $catch);
-
-        return $response;
     }
 }

@@ -1,3 +1,11 @@
 index:
   path: /
   controller: App\controller\DefaultController::index
+
+postPacket:
+  path: /postPacket
+  controller: App\controller\ProcessController::index
+
+pushPacket:
+  path: /pushPacket
+  controller: App\controller\ProcessController::index

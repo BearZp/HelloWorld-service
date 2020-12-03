@@ -37,7 +37,6 @@ $callback = function ($msg) {
         if (!$props) {
             $props = 'false';
         }
-
         $postString =  http_build_query([
             'props' => $props,
             'packet'=> $msg->body

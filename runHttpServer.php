@@ -66,15 +66,9 @@ $server->on("request", function (\Swoole\Http\Request $request, \Swoole\Http\Res
         $sfResponse = new \Symfony\Component\HttpFoundation\Response('Internal server error', 500);
     }
 
-    foreach ($sfResponse->headers as $key => $header) {
-        $response->header($key, current($header));
-    }
+    $kernel->transformResponse($sfResponse, $response);
 
-    if ($sfResponse->headers->get('Connection') === 'close') {
-        $response->end();
-    } else {
-        $response->end($sfResponse->getContent());
-    }
+    $response->end();
 
     $kernel->terminate($sfRequest, $sfResponse);
 });

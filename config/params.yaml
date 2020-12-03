@@ -8,8 +8,4 @@ parameters:
   logger.filePath:    '%kernel.project_dir%/var/log/'
   logger.levelLimit:  'warning'
 
-  rabbitMq.host: 'rabbitmq'
-  rabbitMq.port: 5672
-  rabbitMq.user: 'rabbitmq'
-  rabbitMq.pass: '123456789'
-  rabbitMq.vhos: '/'
+  clientConnectionTimeout: 10

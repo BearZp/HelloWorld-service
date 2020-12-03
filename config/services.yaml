@@ -47,7 +47,9 @@ services:
     arguments:
       - '@lazyAmqpConnection'
       - '%env(resolve:RABBITMQ_QUEUE)%'
+      - true
       - '%clientConnectionTimeout%'
+    public: true
 
   lazyAmqpConnection:
     class: Lib\queues\rabbitMq\LazyRabbitMqConnectionProvider
@@ -57,3 +59,4 @@ services:
       - '%env(resolve:RABBITMQ_USER)%'
       - '%env(resolve:RABBITMQ_PASS)%'
       - '%env(resolve:RABBITMQ_VHOST)%'
+    public: true
