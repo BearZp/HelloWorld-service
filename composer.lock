@@ -8,11 +8,11 @@
     "packages": [
         {
             "name": "helloworld/lib",
-            "version": "0.2.8",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BearZp/HelloWorld-lib.git",
-                "reference": "bbbe67242b0e831efaa1d05d078bd8123042c3e3"
+                "reference": "f8ad584c297e0003ea90d0acfeedd52d4c523016"
             },
             "require": {
                 "ext-json": "*",
@@ -52,7 +52,7 @@
                 "Library",
                 "Logger"
             ],
-            "time": "2020-12-03T13:08:50+00:00"
+            "time": "2020-12-03T14:38:07+00:00"
         },
         {
             "name": "php-amqplib/php-amqplib",

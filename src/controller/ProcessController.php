@@ -5,6 +5,7 @@ namespace App\controller;
 use Lib\logger\LogReferenceTrait;
 use Lib\protocol\ProtocolPacket;
 use Lib\protocol\ProtocolPacketInterface;
+use Lib\types\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,6 +38,10 @@ class ProcessController
      */
     public function index(Request $request)
     {
-        return new Response(json_encode(['controller' => 'ProcessController']));
+        return new Response(json_encode([
+            'controller' => 'ProcessController',
+            'time' => microtime(true),
+            'startTime' => $request->get('startTime'),
+        ]));
     }
 }

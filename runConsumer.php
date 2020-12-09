@@ -42,8 +42,6 @@ $callback = function ($msg) {
             'packet'=> $msg->body
         ]);
 
-        var_dump($postString);
-
         $headers = [];
         $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         $headers['Content-Length'] = strlen($postString);

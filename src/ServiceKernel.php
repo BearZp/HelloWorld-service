@@ -13,6 +13,7 @@ use Lib\protocol\AmqpProtocol;
 use Lib\protocol\ProtocolInterface;
 use Lib\protocol\ProtocolPacket;
 use Lib\protocol\ProtocolPacketInterface;
+use Lib\types\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
@@ -67,13 +68,12 @@ class ServiceKernel extends Kernel
                 $this->getContainer()->getParameter('clientConnectionTimeout')
             );
             $this->incomePaket = $this->activeProtocol->catchPacket($post['packet']);
-
         } else {
             $this->incomePaket = new ProtocolPacket(
                 $request->server['request_uri'],
                 $post,
                 [],
-                ''
+                (new Uuid(''))->generateRandom()->toString()
             );
         }
 
