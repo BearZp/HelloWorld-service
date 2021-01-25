@@ -71,9 +71,9 @@ class ServiceKernel extends Kernel
         } else {
             $this->incomePaket = new ProtocolPacket(
                 $request->server['request_uri'],
-                $post,
-                [],
-                (new Uuid(''))->generateRandom()->toString()
+                $post['data'],
+                $post['scope'],
+                $post['requestId']
             );
         }
 
@@ -115,7 +115,9 @@ class ServiceKernel extends Kernel
             );
             $this->activeProtocol->pushPacket($paket, $this->correlationId);
         } else {
+
             $response->write($sfResponse->getContent());
+
         }
     }
 }
