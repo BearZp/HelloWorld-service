@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-use App\ServiceKernel;
+use App\SwooleServiceKernel;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +38,7 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
 
 /* init symfony kernel */
 try {
-    $kernel = new ServiceKernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+    $kernel = new SwooleServiceKernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
     $kernel->boot();
     $logger = $kernel->getContainer()->get('logger');
 } catch (\Throwable $e) {

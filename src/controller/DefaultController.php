@@ -37,6 +37,6 @@ class DefaultController
      */
     public function index(Request $request)
     {
-        return new Response(json_encode(['aaa' => 'Hello world!']));
+        return new Response('Hello World from Symfony!');
     }
 }
