@@ -1,3 +1,11 @@
-# HelloWorld-service
+# Template for microservice
+To run service as classic php symfony application under http server use public/index.php as index file.
 
-run Http server - php runHttpServer.php 127.0.0.1 4040
+To run non-bloking server under Swoole framework use following command:
+php ./runSwooleHttpServer.php
+
+To run non-bloking server under Ampphp framework use following command:
+php ./runAmpHttpServer.php
+
+To run Amqp consumer use following command:
+php ./runAmqpConsumer.php
