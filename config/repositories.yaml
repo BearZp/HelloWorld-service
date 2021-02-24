@@ -1,0 +1,7 @@
+services:
+  countryRepository:
+    class: App\Repository\CountryRepository
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '@countryMapper'
+    public: true

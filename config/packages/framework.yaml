@@ -16,5 +16,10 @@ framework:
   php_errors:
     log: true
 
+  validation:
+    enable_annotations: true
+
 imports:
   - { resource: ../params.yaml }
+  - { resource: ../mappers.yaml }
+  - { resource: ../repositories.yaml }

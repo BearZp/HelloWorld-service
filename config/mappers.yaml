@@ -1,0 +1,4 @@
+services:
+  countryMapper:
+    class: App\model\mapper\CountryMapper
+    public: true

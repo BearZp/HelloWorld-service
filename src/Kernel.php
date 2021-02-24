@@ -37,6 +37,15 @@ class Kernel extends BaseKernel
         }
     }
 
+//    public function registerBundles()
+//    {
+//        return [
+//             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+//        ];
+//    }
+
+
+
     protected function verifyRequest(Request $request): void
     {
 
