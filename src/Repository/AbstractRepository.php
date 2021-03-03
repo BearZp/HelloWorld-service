@@ -19,11 +19,6 @@ abstract class AbstractRepository
     protected $mapper;
 
     /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilder;
-
-    /**
      * EsppTransactionRepository constructor.
      *
      * @param Connection      $connection
@@ -33,6 +28,13 @@ abstract class AbstractRepository
     {
         $this->connection = $connection;
         $this->mapper = $mapper;
-        $this->queryBuilder = $this->connection->createQueryBuilder();
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getBuilder(): QueryBuilder
+    {
+        return $this->connection->createQueryBuilder();
     }
 }

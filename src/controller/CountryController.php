@@ -21,16 +21,39 @@ class CountryController extends AbstractController
      */
     public function index(CountryComponent $countryComponent): Response
     {
+//        $start = microtime(true);
+//        $countries = $countryComponent->getAll();
+//        if ($countries->isEmpty()) {
+//            return new Response("No data found", Response::HTTP_NOT_FOUND,
+//                ['content-type' => 'text/plain']);
+//        }
+//        $result[] = $countries->toArray();
+//        var_dump(microtime(true) - $start);
+
+
         $start = microtime(true);
-
-        $countries = $countryComponent->getAll();
-
+        $countries = $countryComponent->getAllById();
         if ($countries->isEmpty()) {
             return new Response("No data found", Response::HTTP_NOT_FOUND,
                 ['content-type' => 'text/plain']);
         }
-        var_dump(microtime(true) - $start);
+        $result[] = $countries->toArray();
+        $sync = (microtime(true) - $start);
 
-        return $this->json($countries->toArray());
+
+        $start = microtime(true);
+        $countries = $countryComponent->getAllByIdAsync();
+        if ($countries->isEmpty()) {
+            return new Response("No data found", Response::HTTP_NOT_FOUND,
+                ['content-type' => 'text/plain']);
+        }
+        $result[] = $countries->toArray();
+        $async = (microtime(true) - $start);
+
+        var_dump($sync);
+        var_dump($async);
+        var_dump('DELTA TIME:' . round(($sync - $async) * 1000, 2) . ' ms');
+
+        return $this->json($result);
     }
 }

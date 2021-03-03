@@ -2,6 +2,6 @@ services:
   countryRepository:
     class: App\Repository\CountryRepository
     arguments:
-      - '@doctrine.dbal.default_connection'
+      - '@App\doctrine\pgsql\Connection'
       - '@countryMapper'
     public: true

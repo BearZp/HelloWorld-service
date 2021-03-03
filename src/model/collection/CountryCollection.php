@@ -2,7 +2,7 @@
 
 namespace App\model\collection;
 
-use App\model\Country;
+use App\model\CountryInterface;
 use Lib\collection\AbstractImmutableCollection;
 use Lib\exception\NotInstanceOfException;
 
@@ -13,10 +13,10 @@ class CountryCollection extends AbstractImmutableCollection
      */
     public function validate($value): void
     {
-        if (!$value instanceof Country) {
+        if (!$value instanceof CountryInterface) {
             throw new NotInstanceOfException(
                 '$value',
-                'Country',
+                'CountryInterface',
                 is_object($value) ? get_class($value) : gettype($value)
             );
         }

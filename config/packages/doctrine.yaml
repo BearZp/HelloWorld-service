@@ -8,7 +8,8 @@ doctrine:
                 host:     '%env(resolve:DATABASE_HOST)%' #'%database_host%'
                 port:     '%env(resolve:DATABASE_PORT)%' #'%database_port%'
                 dbname:   '%env(resolve:DATABASE_NAME)%' #'%database_name%'
-                user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+                #user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+                user:     'wf_user'
                 password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
                 charset:  UTF8
             statistic:
@@ -17,17 +18,20 @@ doctrine:
                 host:     '%env(resolve:DATABASE_HOST)%' #'%database_host%'
                 port:     '%env(resolve:DATABASE_PORT)%' #'%database_port%'
                 dbname:   '%env(resolve:DATABASE_NAME)%' #'%database_name%'
-                user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+                #user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+                user:     'wf_user_stat'
                 password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
                 charset:  UTF8
 #            async:
-##                driver:   pdo_mysql
+##                driver:   pgsql
 ##                driver_class: App\doctrine\pgsql\Driver
-#                driver_class: Doctrine\DBAL\Driver\PDO\PgSQL\Driver
+#                wrapper_class: App\doctrine\pgsql\Connection
+#                driver_class: App\doctrine\pgsql\Driver
 #                host:     '%env(resolve:DATABASE_HOST)%' #'%database_host%'
 #                port:     '%env(resolve:DATABASE_PORT)%' #'%database_port%'
 #                dbname:   '%env(resolve:DATABASE_NAME)%' #'%database_name%'
-#                user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+#                #user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+#                user:     'wf_user_async'
 #                password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
 #                charset:  UTF8
 
