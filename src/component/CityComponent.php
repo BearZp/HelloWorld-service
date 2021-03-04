@@ -5,8 +5,10 @@ namespace App\component;
 use App\ddo\CreateCityRequest;
 use App\Entity\City;
 use App\model\collection\CityCollection;
+use App\model\collection\CountryCollection;
 use App\Repository\CityRepository;
 use App\Repository\Stats\CityStatsRepository;
+use Lib\types\IntegerType;
 
 
 class CityComponent
@@ -48,5 +50,14 @@ class CityComponent
         $city->setPopulation($createCityRequest->getPopulation());
 
          return $this->cityRepository->create($city);
+    }
+
+    public function getAllById()
+    {
+        $models = [];
+        for($i=1; $i<=5; $i++) {
+            $models[] = $this->cityRepository->getById(new IntegerType($i));
+        }
+        return new CityCollection($models);
     }
 }

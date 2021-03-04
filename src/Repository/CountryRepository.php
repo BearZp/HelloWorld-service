@@ -8,7 +8,6 @@ use App\model\CountryFuture;
 use App\model\CountryInterface;
 use App\model\mapper\CountryMapper;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\Query\Expr\Join;
 use Lib\types\IntegerType;
 
 class CountryRepository extends AbstractRepository
@@ -22,7 +21,6 @@ class CountryRepository extends AbstractRepository
      */
     public function __construct(Connection $connection, CountryMapper $mapper)
     {
-        //var_dump('Driver class in repository >>>  ' . get_class($connection->getDriver()));
         parent::__construct($connection, $mapper);
     }
 

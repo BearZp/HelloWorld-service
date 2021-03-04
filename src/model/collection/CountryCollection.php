@@ -28,7 +28,7 @@ class CountryCollection extends AbstractImmutableCollection
     public function toArray(): array
     {
         $result = [];
-        /** @var Country $country */
+        /** @var CountryInterface $country */
         foreach (parent::toArray() as $country) {
             $result[] = $country->toArray();
         }

@@ -3,9 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\City;
+use App\model\CountryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Lib\types\IntegerType;
 
 /**
  * @method City|null find($id, $lockMode = null, $lockVersion = null)
@@ -38,5 +40,14 @@ class CityRepository extends EntityRepository
         $this->getEntityManager()->persist($city);
         $this->getEntityManager()->flush($city);
         return $city;
+    }
+
+    /**
+     * @param IntegerType $id
+     * @return City
+     */
+    public function getById(IntegerType $id): City
+    {
+        return $this->getEntityManager()->find(City::class, $id->toString());
     }
 }

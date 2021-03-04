@@ -3,7 +3,6 @@
 namespace App\component;
 
 use App\model\collection\CountryCollection;
-use App\model\Country;
 use App\Repository\CountryRepository;
 use Lib\types\IntegerType;
 

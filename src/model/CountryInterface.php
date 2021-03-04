@@ -5,7 +5,6 @@ namespace App\model;
 use Lib\types\IntegerType;
 use Lib\types\StringType255;
 
-
 interface CountryInterface
 {
     /**
