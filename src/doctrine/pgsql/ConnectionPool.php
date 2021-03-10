@@ -54,7 +54,7 @@ class ConnectionPool
      */
     private function createNewConnection()
     {
-        $connection = pg_pconnect($this->connectionString, PGSQL_CONNECT_ASYNC);
+        $connection = pg_connect($this->connectionString, PGSQL_CONNECT_FORCE_NEW);
         if ($connection === false) {
             throw new Exception('pg_pconnect: could not connect to server: ');
         }
@@ -73,8 +73,8 @@ class ConnectionPool
             return $this->defaultConnection;
         }
 
-        // var_dump('+++++++++++++++++++++++++++++++++++++++++++');
-        // var_dump("pool size => " . count($this->connectionPool));
+//        var_dump('+++++++++++++++++++++++++++++++++++++++++++');
+//        var_dump("pool size => " . count($this->connectionPool));
 
         foreach ($this->poolMap as $item => $value) {
             if ($value === self::CONNECTION_FREE && !pg_connection_busy($this->connectionPool[$item])) {

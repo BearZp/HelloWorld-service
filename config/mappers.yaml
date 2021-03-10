@@ -2,3 +2,7 @@ services:
   countryMapper:
     class: App\model\mapper\CountryMapper
     public: true
+
+  bookMapper:
+    class: App\model\mapper\BookMapper
+    public: true

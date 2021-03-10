@@ -5,3 +5,10 @@ services:
       - '@App\doctrine\pgsql\Connection'
       - '@countryMapper'
     public: true
+
+  bookRepository:
+    class: App\Repository\BookRepository
+    arguments:
+      - '@App\doctrine\pgsql\Connection'
+      - '@bookMapper'
+    public: true

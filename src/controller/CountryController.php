@@ -4,6 +4,7 @@
 namespace App\controller;
 
 
+use App\component\BookComponent;
 use App\component\CityComponent;
 use App\component\CountryComponent;
 use Lib\logger\LogReferenceTrait;
@@ -21,8 +22,19 @@ class CountryController extends AbstractController
      * @param CityComponent $cityComponent
      * @return Response
      */
-    public function index(CountryComponent $countryComponent, CityComponent $cityComponent): Response
+    public function index(CountryComponent $countryComponent, CityComponent $cityComponent, BookComponent $bookComponent): Response
     {
+        //$countryComponent->getAll();
+        $start = microtime(true);
+        $cities = $cityComponent->getAllById();
+        if ($cities->isEmpty()) {
+            return new Response("No data found", Response::HTTP_NOT_FOUND,
+                ['content-type' => 'text/plain']);
+        }
+        $result[] = $cities->toArray();
+        $em = (microtime(true) - $start);
+
+
         $start = microtime(true);
         $countries = $countryComponent->getAllById();
         if ($countries->isEmpty()) {
@@ -32,24 +44,16 @@ class CountryController extends AbstractController
         $result[] = $countries->toArray();
         $sync = (microtime(true) - $start);
 
-
         $start = microtime(true);
-        $countries = $countryComponent->getAllByIdAsync();
-        if ($countries->isEmpty()) {
+        $books = $bookComponent->getAllByIdAsync();
+        if ($books->isEmpty()) {
             return new Response("No data found", Response::HTTP_NOT_FOUND,
                 ['content-type' => 'text/plain']);
         }
-        $result[] = $countries->toArray();
+        $result[] = $books->toArray();
         $async = (microtime(true) - $start);
 
-        $start = microtime(true);
-        $cities = $cityComponent->getAllById();
-        if ($cities->isEmpty()) {
-            return new Response("No data found", Response::HTTP_NOT_FOUND,
-                ['content-type' => 'text/plain']);
-        }
-        $result[] = $cities->toArray();
-        $em = (microtime(true) - $start);
+
 
         var_dump('Entities:     ' . $em);
         var_dump('Sync Custom:  ' . $sync);

@@ -81,6 +81,8 @@ class PsqlStatement implements IteratorAggregate, StatementInterface, Result
      */
     public function fetchAssociative()
     {
+        $this->result = pg_get_result($this->dbConn);
+
         if (!$this->result) {
             throw new \Exception('Result undefined');
         }
@@ -89,6 +91,10 @@ class PsqlStatement implements IteratorAggregate, StatementInterface, Result
             $this->throwError();
         }
         $this->free();
+
+        var_dump('------- get result ------' . microtime(true));
+//        var_dump($return);
+
         return $return;
     }
 
@@ -300,6 +306,8 @@ class PsqlStatement implements IteratorAggregate, StatementInterface, Result
      */
     public function execute($params = null)
     {
+        var_dump('------- send query ------' . microtime(true));
+
         if ($params === null) {
             ksort($this->boundParams);
             $params = [];
@@ -321,9 +329,9 @@ class PsqlStatement implements IteratorAggregate, StatementInterface, Result
         }
         // var_dump('SEND QUERY');
         //var_dump($this->sql);
-        if($status) {
-            $this->result = pg_get_result($this->dbConn);
-        }
+//        if($status) {
+//            $this->result = pg_get_result($this->dbConn);
+//        }
         return $status;
     }
 

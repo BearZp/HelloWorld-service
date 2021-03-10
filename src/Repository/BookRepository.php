@@ -3,40 +3,40 @@
 namespace App\Repository;
 
 use App\doctrine\pgsql\Connection;
-use App\model\collection\CountryCollection;
-use App\model\CountryFuture;
-use App\model\CountryInterface;
-use App\model\mapper\CountryMapper;
+use App\model\collection\BookCollection;
+use App\model\BookFuture;
+use App\model\BookInterface;
+use App\model\mapper\BookMapper;
 use Doctrine\Common\Collections\Criteria;
 use Lib\types\IntegerType;
 
-class CountryRepository extends AbstractRepository
+class BookRepository extends AbstractRepository
 {
-    private const TABLE = 'countries';
+    private const TABLE = 'books';
 
     /**
      * CountryRepository constructor.
      * @param Connection $connection
-     * @param CountryMapper $mapper
+     * @param BookMapper $mapper
      */
-    public function __construct(Connection $connection, CountryMapper $mapper)
+    public function __construct(Connection $connection, BookMapper $mapper)
     {
         parent::__construct($connection, $mapper);
     }
 
     /**
      * @param Criteria|null $criteria
-     * @return CountryCollection
+     * @return BookCollection
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getAll(Criteria $criteria = null): CountryCollection
+    public function getAll(Criteria $criteria = null): BookCollection
     {
         $query = $this->getBuilder()
-            ->select('*')
+            ->select('*, sleep')
             ->from(self::TABLE)
             ->execute();
 
-        return new CountryCollection(function() use ($query) {
+        return new BookCollection(function() use ($query) {
             $countries = [];
             foreach($query->fetchAllAssociative() as $item) {
                 $countries[] = $this->mapper->fromArray($item);
@@ -50,7 +50,7 @@ class CountryRepository extends AbstractRepository
      * @return CountryInterface
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getByIdAsync(IntegerType $id): CountryInterface
+    public function getByIdAsync(IntegerType $id): BookInterface
     {
         $query = $this->getBuilder()
             ->select('*')
@@ -58,7 +58,7 @@ class CountryRepository extends AbstractRepository
             ->where('id = ' . $id->toString())
             ->execute();
 
-        return new CountryFuture(function() use ($query) {
+        return new BookFuture(function() use ($query) {
             return $this->mapper->fromArray($query->fetchAssociative());
         });
     }

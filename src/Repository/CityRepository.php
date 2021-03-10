@@ -26,6 +26,7 @@ class CityRepository extends EntityRepository
     public function __construct(EntityManagerInterface $em)
     {
         $class = new ClassMetadata(City::class);
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
         parent::__construct($em, $class);
     }
 
@@ -48,6 +49,7 @@ class CityRepository extends EntityRepository
      */
     public function getById(IntegerType $id): City
     {
+        sleep(1);
         return $this->getEntityManager()->find(City::class, $id->toString());
     }
 }
