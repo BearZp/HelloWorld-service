@@ -1,0 +1,54 @@
+services:
+#
+#  status.service:
+#    class: App\Service\Status\StatusService
+
+  level.component:
+    class: App\Component\Level\LevelComponent
+    arguments:
+      - '@level.localCache.repository'
+      - '@level.slave.repository'
+    calls:
+      - setLogger: [ '@logger' ]
+    public: true
+
+  userLevel.component:
+    class: App\Component\UserLevel\UserLevelComponent
+    arguments:
+      - '@userLevel.localCache.repository'
+      - '@level.component'
+    calls:
+      - setLogger: [ '@logger' ]
+    public: true
+
+  question.component:
+    class: App\Component\Question\QuestionComponent
+    arguments:
+      - '@question.localCache.repository'
+      - '@questionLevel.localCache.repository'
+      - '@level.component'
+      - '@directory.component'
+    calls:
+      - setLogger: [ '@logger' ]
+    public: true
+
+  answer.component:
+    class: App\Component\Answer\AnswerComponent
+    arguments:
+      - '@answer.localCache.repository'
+      - '@question.component'
+      - '@userLevel.component'
+      - '@level.component'
+      - '@directory.component'
+    calls:
+      - setLogger: [ '@logger' ]
+    public: true
+
+  directory.component:
+    class: App\Component\Directory\DirectoryComponent
+    arguments:
+      - '@directory.localCache.repository'
+      - '@directoryQuestionLevel.repository'
+    calls:
+      - setLogger: [ '@logger' ]
+    public: true

@@ -1,8 +1,20 @@
 services:
-  countryMapper:
-    class: App\model\mapper\CountryMapper
+  level.mapper:
+    class: App\Model\Level\LevelMapper
     public: true
 
-  bookMapper:
-    class: App\model\mapper\BookMapper
+  userLevel.mapper:
+    class: App\Model\UserLevel\UserLevelMapper
+    public: true
+
+  question.mapper:
+    class: App\Model\Question\QuestionMapper
+    public: true
+
+  answer.mapper:
+    class: App\Model\Answer\AnswerMapper
+    public: true
+
+  directory.mapper:
+    class: App\Model\Directory\DirectoryMapper
     public: true

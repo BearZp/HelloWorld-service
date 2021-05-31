@@ -18,27 +18,82 @@ services:
       - '../src/DependencyInjection/'
       - '../src/Entity/'
       - '../src/Kernel.php'
-      - '../src/ServiceKernel.php'
+      - '../src/AmpServiceKernel.php'
+      - '../src/SwooleServiceKernel.php'
       - '../src/Tests/'
+      - '../src/Doctrine/'
 
   # controllers are imported separately to make sure services can be injected
   # as action arguments even if you don't extend any base controller class
-  App\controller\:
-    resource: '../src/controller/'
+#  App\Controller\:
+#    resource: '../src/Controller/'
+#    tags: ['controller.service_arguments']
+#    arguments:
+#      - '@service_container'
+#    calls:
+#      - setLogger: ['@logger']
+
+  App\Controller\Level\:
+    resource: '../src/Controller/Level/'
+    arguments:
+      - '@level.component'
     tags: ['controller.service_arguments']
-    arguments:
-      - '@service_container'
     calls:
-      - setLogger: ['@logger']
+      - setLogger: [ '@logger' ]
 
-  App\Repository\Stats\:
-    resource: '../src/Repository/Stats'
-    tags: ['doctrine.repository_service']
+  App\Controller\UserLevel\:
+    resource: '../src/Controller/UserLevel/'
     arguments:
-      - '@doctrine.orm.statisticEM_entity_manager'
+      - '@userLevel.component'
+    tags: ['controller.service_arguments']
+    calls:
+      - setLogger: [ '@logger' ]
 
-  App\doctrine\pgsql\Connection:
-    class: App\doctrine\pgsql\Connection
+  App\Controller\Question\:
+    resource: '../src/Controller/Question/'
+    arguments:
+      - '@question.component'
+    tags: [ 'controller.service_arguments' ]
+    calls:
+      - setLogger: [ '@logger' ]
+
+  App\Controller\Answer\:
+    resource: '../src/Controller/Answer/'
+    arguments:
+      - '@answer.component'
+    tags: [ 'controller.service_arguments' ]
+    calls:
+      - setLogger: [ '@logger' ]
+
+  App\Controller\Directory\:
+    resource: '../src/Controller/Directory/'
+    arguments:
+      - '@directory.component'
+    tags: [ 'controller.service_arguments' ]
+    calls:
+      - setLogger: [ '@logger' ]
+
+
+### SYSTEM ###
+
+  App\EventSubscriber\TokenSubscriber:
+    class: App\EventSubscriber\TokenSubscriber
+    arguments:
+      - '%authToken%'
+    tags: ['kernel.event_subscriber']
+
+  kernel.event_listener.json_request_transformer:
+    class: App\EventSubscriber\JsonRequestTransformerListener
+    tags:
+      - {
+        name: "kernel.event_listener",
+        event: "kernel.request",
+        method: "onKernelRequest",
+        priority: "100"
+      }
+
+  connection.master:
+    class: App\Doctrine\pgsql\Connection
     arguments:
       $params:
         host: '%env(resolve:DATABASE_HOST)%' #'%database_host%'
@@ -47,21 +102,39 @@ services:
         user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
         password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
         charset: UTF8
-      $driver: '@App\doctrine\pgsql\Driver'
+      $driver: '@App\Doctrine\pgsql\Driver'
     public: true
+
+  connection.slave:
+    class: App\Doctrine\pgsql\Connection
+    arguments:
+      $params:
+        host: '%env(resolve:DATABASE_HOST)%' #'%database_host%'
+        port: '%env(resolve:DATABASE_PORT)%' #'%database_port%'
+        dbname: '%env(resolve:DATABASE_NAME)%' #'%database_name%'
+        user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
+        password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
+        charset: UTF8
+      $driver: '@App\Doctrine\pgsql\Driver'
+    public: true
+
+  App\Doctrine\pgsql\Driver:
+    class: App\Doctrine\pgsql\Driver
+    autowire: true
+    autoconfigure: true
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
   logger:
-    class: Lib\logger\FileLogger
+    class: Tools\logger\FileLogger
     arguments:
       - '%logger.filePath%'
       - '%logger.levelLimit%'
     public: true
 
   amqpProtocol:
-    class: Lib\protocol\AmqpProtocol
+    class: Tools\protocol\AmqpProtocol
     arguments:
       - '@lazyAmqpConnection'
       - '%env(resolve:RABBITMQ_QUEUE)%'
@@ -70,7 +143,7 @@ services:
     public: true
 
   lazyAmqpConnection:
-    class: Lib\queues\rabbitMq\LazyRabbitMqConnectionProvider
+    class: Tools\queues\rabbitMq\LazyRabbitMqConnectionProvider
     arguments:
       - '%env(resolve:RABBITMQ_HOST)%'
       - '%env(resolve:RABBITMQ_PORT)%'

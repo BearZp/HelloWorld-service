@@ -1,0 +1,23 @@
+services:
+  cache.local:
+    class: Tools\cache\LocaleCache
+    arguments:
+      - '%localeCache.defaultLifetime%'
+      - '%localeCache.limitEntityAmount%'
+    public: true
+
+  cache.redis:
+    parent: 'cache.adapter.redis'
+    tags:
+      - { name: 'cache.pool', namespace: 'cache.redis' }
+
+  redis:
+    class: \Redis
+    factory: [ 'Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection' ]
+    arguments:
+      - '%env(APP_REDIS_CONNECTION)%'
+      - {
+          retry_interval: '%redisCache.retryInterval%',
+          timeout: '%redisCache.timeout%',
+          read_timeout: '%redisCache.readTimeout%'
+        }

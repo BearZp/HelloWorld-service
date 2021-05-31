@@ -19,7 +19,16 @@ framework:
   validation:
     enable_annotations: true
 
+
+  cache:
+    pools:
+      radis.cache.pool:
+        adapter: cache.adapter.redis
+        provider: redis
+
 imports:
   - { resource: ../params.yaml }
+  - { resource: ../cache.yaml }
   - { resource: ../mappers.yaml }
   - { resource: ../repositories.yaml }
+  - { resource: ../components.yaml }

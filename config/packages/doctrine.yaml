@@ -12,50 +12,17 @@ doctrine:
                 user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
                 password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
                 charset:  UTF8
-            statistic:
-#                driver:   pdo_mysql
-                driver_class: Doctrine\DBAL\Driver\PDO\PgSQL\Driver
-                host:     '%env(resolve:DATABASE_HOST)%' #'%database_host%'
-                port:     '%env(resolve:DATABASE_PORT)%' #'%database_port%'
-                dbname:   '%env(resolve:DATABASE_NAME)%' #'%database_name%'
-                user:     '%env(resolve:DATABASE_USER)%' #'%database_user%'
-                password: '%env(resolve:DATABASE_PASSWORD)%' #'%database_password%'
-                charset:  UTF8
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '13'
+#
 #    orm:
+#        default_entity_manager: default
 #        auto_generate_proxy_classes: true
-#        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-#        auto_mapping: true
-#        mappings:
-#            App:
-#                is_bundle: false
-#                type: annotation
-#                dir: '%kernel.project_dir%/src/Entity'
-#                prefix: 'App\Entity'
-#                alias: App
-
-    orm:
-        default_entity_manager: default
-        auto_generate_proxy_classes: true
-        entity_managers:
-            default:
-                connection: default
-                mappings:
-                    Default:
-                        is_bundle: false
-                        type: annotation
-                        dir: '%kernel.project_dir%/src/Entity'
-                        prefix: 'App\Entity'
-                        alias: Default
-            statisticEM:
-                connection: statistic
-                mappings:
-                    Statistic:
-                        is_bundle: false
-                        type: annotation
-                        dir: '%kernel.project_dir%/src/Entity'
-                        prefix: 'App\Entity'
-                        alias: Statistic
+#        entity_managers:
+#            default:
+#                connection: default
+#                mappings:
+#                    Default:
+#                        is_bundle: false
+#                        type: annotation
+#                        dir: '%kernel.project_dir%/src/Entity'
+#                        prefix: 'App\Entity'
+#                        alias: Default

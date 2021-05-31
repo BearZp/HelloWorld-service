@@ -41,9 +41,6 @@
     "amphp/windows-registry": {
         "version": "v0.3.3"
     },
-    "asyncswarm/lib": {
-        "version": "0.4.3"
-    },
     "cash/lrucache": {
         "version": "1.0.0"
     },
@@ -170,6 +167,9 @@
     },
     "monolog/monolog": {
         "version": "2.2.0"
+    },
+    "mwallet-x/tools": {
+        "version": "v1.0.3"
     },
     "nikic/php-parser": {
         "version": "v4.10.4"

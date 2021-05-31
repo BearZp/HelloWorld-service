@@ -1,7 +1,15 @@
 parameters:
+  authToken: '4d368a652ab9d211d91df54636e1ca8a7af9ad70557b9a94a80227be5653f2bee867911409ee5e3214b64f5222129c5b9d027a883a4d5eb97eca516fba8ea72f'
 
-  localeCache.defaultLifetime: 30
+  app.env: '%env(APP_ENV)%'
+  app.service.name: '%env(APP_SERVICE_NAME)%'
+
+  localeCache.defaultLifetime: 5
   localeCache.limitEntityAmount: 100
+
+  redisCache.retryInterval: 0
+  redisCache.timeout: 10
+  redisCache.readtTimeout: 2
 
   logger.host:        'logstash'
   logger.port:        5000

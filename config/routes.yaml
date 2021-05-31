@@ -1,11 +1,12 @@
 index:
   path: /
-  controller: App\controller\DefaultController::index
+  controller: App\Controller\DefaultController::index
 
-postPacket:
-  path: /postPacket
-  controller: App\controller\ProcessController::index
-
-pushPacket:
-  path: /pushPacket
-  controller: App\controller\ProcessController::index
+#level_create:
+#  path: /level/create
+#  controller: App\Controller\Level\CreateController::handle
+#  methods: POST
+#level_delete:
+#  path: /level/create
+#  controller: App\Controller\Level\DeleteController::handle
+#  methods: POST

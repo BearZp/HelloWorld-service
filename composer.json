@@ -8,6 +8,7 @@
         "ext-json": "*",
         "ext-zlib": "*",
         "ext-pgsql": "*",
+        "ext-readline": "*",
         "amphp/amp": "^2",
         "amphp/byte-stream": "^1.3",
         "amphp/http": "^1",
@@ -38,7 +39,13 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "gitlab-domains": [
+            "gitlab.walletfactory.com"
+        ],
+        "gitlab-token": {
+            "gitlab.walletfactory.com": "4Kw-sjNs4jrNAs42RxyB"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -86,8 +93,8 @@
           "url": "https://asset-packagist.org"
         },
         {
-          "type": "git",
-          "url": "https://github.com/BearZp/HelloWorld-lib.git"
+            "type": "git",
+            "url": "https://gitlab.walletfactory.com/projectx-group/packages/tools.git"
         }
     ]
 }

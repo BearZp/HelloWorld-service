@@ -1,14 +1,170 @@
 services:
-  countryRepository:
-    class: App\Repository\CountryRepository
+
+  #### Level ####
+
+  level.localCache.repository:
+    class: App\Repository\Level\LevelCacheRepository
     arguments:
-      - '@App\doctrine\pgsql\Connection'
-      - '@countryMapper'
+      - '@cache.local'
+      - '@level.mapper'
+      - '@level.redisCache.repository'
     public: true
 
-  bookRepository:
-    class: App\Repository\BookRepository
+  level.redisCache.repository:
+    class: App\Repository\Level\LevelCacheRepository
     arguments:
-      - '@App\doctrine\pgsql\Connection'
-      - '@bookMapper'
+      - '@cache.redis'
+      - '@level.mapper'
+      - '@level.repository'
+    public: true
+
+  level.repository:
+    class: App\Repository\Level\LevelRepository
+    arguments:
+      - '@connection.master'
+      - '@level.mapper'
+    public: true
+
+  level.slave.repository:
+    class: App\Repository\Level\LevelSlaveRepository
+    arguments:
+      - '@connection.slave'
+      - '@level.mapper'
+    public: true
+
+  #### UserLevel ####
+
+  userLevel.localCache.repository:
+    class: App\Repository\UserLevel\UserLevelCacheRepository
+    arguments:
+      - '@cache.local'
+      - '@userLevel.mapper'
+      - '@userLevel.redisCache.repository'
+    public: true
+
+  userLevel.redisCache.repository:
+    class: App\Repository\UserLevel\UserLevelCacheRepository
+    arguments:
+      - '@cache.redis'
+      - '@userLevel.mapper'
+      - '@userLevel.repository'
+    public: true
+
+  userLevel.repository:
+    class: App\Repository\UserLevel\UserLevelRepository
+    arguments:
+      - '@connection.master'
+      - '@userLevel.mapper'
+    public: true
+
+  #### Question ####
+
+  question.localCache.repository:
+    class: App\Repository\Question\QuestionCacheRepository
+    arguments:
+      - '@cache.local'
+      - '@question.mapper'
+      - '@question.redisCache.repository'
+    public: true
+
+  question.redisCache.repository:
+    class: App\Repository\Question\QuestionCacheRepository
+    arguments:
+      - '@cache.redis'
+      - '@question.mapper'
+      - '@question.repository'
+    public: true
+
+  question.repository:
+    class: App\Repository\Question\QuestionRepository
+    arguments:
+      - '@connection.master'
+      - '@question.mapper'
+    public: true
+
+  #### QuestionLevel ####
+
+  questionLevel.localCache.repository:
+    class: App\Repository\Question\QuestionLevelCacheRepository
+    arguments:
+      - '@cache.local'
+      - '@question.mapper'
+      - '@level.mapper'
+      - '@questionLevel.redisCache.repository'
+    public: true
+
+  questionLevel.redisCache.repository:
+    class: App\Repository\Question\QuestionLevelCacheRepository
+    arguments:
+      - '@cache.redis'
+      - '@question.mapper'
+      - '@level.mapper'
+      - '@questionLevel.repository'
+    public: true
+
+  questionLevel.repository:
+    class: App\Repository\Question\QuestionLevelRepository
+    arguments:
+      - '@connection.master'
+      - '@question.mapper'
+      - '@level.mapper'
+    public: true
+
+  #### Answer ####
+
+  answer.localCache.repository:
+    class: App\Repository\Answer\AnswerCacheRepository
+    arguments:
+      - '@cache.local'
+      - '@answer.mapper'
+      - '@answer.redisCache.repository'
+    public: true
+
+  answer.redisCache.repository:
+    class: App\Repository\Answer\AnswerCacheRepository
+    arguments:
+      - '@cache.redis'
+      - '@answer.mapper'
+      - '@answer.repository'
+    public: true
+
+  answer.repository:
+    class: App\Repository\Answer\AnswerRepository
+    arguments:
+      - '@connection.master'
+      - '@answer.mapper'
+    public: true
+
+  #### Directory ####
+
+  directory.localCache.repository:
+    class: App\Repository\Directory\DirectoryCacheRepository
+    arguments:
+      - '@cache.local'
+      - '@directory.mapper'
+      - '@directory.redisCache.repository'
+    public: true
+
+  directory.redisCache.repository:
+    class: App\Repository\Directory\DirectoryCacheRepository
+    arguments:
+      - '@cache.redis'
+      - '@directory.mapper'
+      - '@directory.repository'
+    public: true
+
+  directory.repository:
+    class: App\Repository\Directory\DirectoryRepository
+    arguments:
+      - '@connection.master'
+      - '@directory.mapper'
+    public: true
+
+  #### DirectoryQuestionLevel ####
+
+  directoryQuestionLevel.repository:
+    class: App\Repository\Directory\DirectoryQuestionLevelRepository
+    arguments:
+      - '@connection.master'
+      - '@directory.mapper'
     public: true

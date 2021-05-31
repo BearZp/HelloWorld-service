@@ -13,13 +13,16 @@ use Amp\Http\Server\HttpServer;
 use Amp\Http\Server\Request as AmpRequest;
 use Amp\Http\Server\Response as AmpResponse;
 use Amp\Socket\Server;
+use App\AmpServiceKernel;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\PsrLogMessageProcessor;
+use Tools\cache\LocaleCache;
 use function Amp\ByteStream\getStdout;
 
 require dirname(__FILE__).'/vendor/autoload.php';
@@ -47,12 +50,12 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
 
 /* init symfony kernel */
 try {
-    $kernel = new \App\AmpServiceKernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+    $kernel = new AmpServiceKernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
     $kernel->boot();
     /** @var \Psr\Log\LoggerInterface $logger */
     $logger = $kernel->getContainer()->get('logger');
     $kernel->setLogger($logger);
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     var_dump($e->getMessage());
     var_dump($e->getTraceAsString());
     exit;
@@ -74,7 +77,6 @@ Amp\Loop::run(function () use ($kernel, $logger) {
     ];
 
     $server = new HttpServer($sockets, new CallableRequestHandler(function (AmpRequest $request) use ($kernel) {
-
         $body = yield $request->getBody()->buffer();
         $sfRequest = $kernel->transformRequest($request, $body);
         try {
@@ -84,15 +86,22 @@ Amp\Loop::run(function () use ($kernel, $logger) {
             if ($dump !== '') {
                 $sfResponse->setContent($dump . $sfResponse->getContent());
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $kernel->getLogger()->error('Internal server error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            $sfResponse = new \Symfony\Component\HttpFoundation\Response('Internal server error', 500);
+            $sfResponse = new Response('Internal server error', 500);
         }
         $response = new AmpResponse();
         $kernel->transformResponse($sfResponse, $response);
 
         return $response;
     }), $logger);
+
+    Amp\Loop::repeat(5000, function () use ($kernel) {
+        //clear cache
+        /** @var LocaleCache $localCache */
+        $localeCache = $kernel->getContainer()->get('cache.local');
+        $localeCache->clearExpiredItems();
+    });
 
     yield $server->start();
 
